@@ -1,0 +1,260 @@
+openapi: 3.0.0
+info:
+  title: RP FastAPI REST API
+  version: "1.0.0"
+  description: Trails, Locations, and Reviews
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+
+tags:
+  - name: Auth
+    description: Authentication endpoints
+  - name: Admin
+    description: Administrator operations (require Bearer token)
+  - name: User
+    description: Public operations (open access)
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: token
+
+  schemas:
+    Trail:
+      type: object
+      required: [trail_id, user_id, trail_name]
+      properties:
+        trail_id: { type: string }
+        user_id: { type: string }
+        trail_name: { type: string }
+        trail_length: { type: number }
+        trail_duration: { type: number }
+        trail_type: { type: string }
+        trail_difficulty: { type: string }
+        trail_isPublic: { type: boolean }
+
+    Location:
+      type: object
+      required: [location_id, trail_id, location_latitude, location_longitude, location_pointOrder]
+      properties:
+        location_id: { type: string }
+        trail_id: { type: string, description: "Must match the path parameter trail_id" }
+        location_latitude: { type: number }
+        location_longitude: { type: number }
+        location_pointOrder: { type: integer }
+
+    Review:
+      type: object
+      required: [reviews_id, user_id, trail_id, reviews_rating, reviews_description]
+      properties:
+        reviews_id: { type: string }
+        user_id: { type: string }
+        trail_id: { type: string, description: "Must match the path parameter trail_id" }
+        reviews_rating: { type: integer }
+        reviews_description: { type: string }
+
+paths:
+
+  /login:
+    post:
+      tags: [Auth]
+      summary: Authenticate user and return token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+      responses:
+        "200": { description: Successful login }
+        "401": { description: Invalid credentials }
+
+    get:
+      tags: [Auth]
+      summary: Example users
+      responses:
+        "200": { description: List of example users }
+
+  /trails:
+    post:
+      tags: [Admin]
+      summary: Create a new trail
+      security: [ { bearerAuth: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trail'
+      responses:
+        "200": { description: Trail created successfully }
+        "400": { description: Bad request }
+
+    get:
+      tags: [Admin]
+      summary: List trails
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: query
+          name: owner_user_id
+          schema: { type: string }
+        - in: query
+          name: include_private
+          schema: { type: boolean }
+      responses:
+        "200": { description: List of trails }
+
+  /trails/{trail_id}:
+    get:
+      tags: [Admin]
+      summary: Get trail by ID
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: trail_id
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: Trail details }
+        "404": { description: Trail not found }
+
+    put:
+      tags: [Admin]
+      summary: Update trail
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: trail_id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trail'
+      responses:
+        "200": { description: Trail updated }
+        "400": { description: Bad request }
+
+    delete:
+      tags: [Admin]
+      summary: Delete trail
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: trail_id
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: Trail deleted }
+        "404": { description: Trail not found }
+
+  /trails/{trail_id}/locations:
+    post:
+      tags: [Admin]
+      summary: Add a location to a trail
+      description: Body trail_id must match the path trail_id
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: trail_id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+      responses:
+        "200": { description: Location added }
+        "400": { description: Bad request }
+
+    get:
+      tags: [Admin]
+      summary: List locations for a trail
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: trail_id
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: List of locations }
+
+  /locations/{location_id}:
+    delete:
+      tags: [Admin]
+      summary: Delete a location
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: location_id
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: Location deleted }
+        "404": { description: Location not found }
+
+  /trails/{trail_id}/reviews:
+    post:
+      tags: [Admin]
+      summary: Add a review to a trail
+      description: Body trail_id must match the path trail_id
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: trail_id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'
+      responses:
+        "200": { description: Review added }
+        "400": { description: Bad request }
+
+    get:
+      tags: [Admin]
+      summary: List reviews for a trail
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: trail_id
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: List of reviews }
+
+  /reviews/{reviews_id}:
+    delete:
+      tags: [Admin]
+      summary: Delete a review
+      security: [ { bearerAuth: [] } ]
+      parameters:
+        - in: path
+          name: reviews_id
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: Review deleted }
+        "404": { description: Review not found }
+
+  /trails/public:
+    get:
+      tags: [User]
+      summary: List public trails
+      description: This endpoint is open and does not require authentication
+      responses:
+        "200": { description: Public trails view }
