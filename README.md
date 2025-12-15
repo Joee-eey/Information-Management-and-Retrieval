@@ -85,13 +85,16 @@ Public Endpoints
 # 7. Deployment and Execution
 Step 1: Install dependencies
 - pip install -r requirements.txt
+
 Step 2: Configure environment variables
 - DB_SERVER=localhost
 - DB_NAME=IMR
 - DB_USER=SA
 - DB_PASSWORD=C0mp2001!
+
 Step 3: Start the API
 - uvicorn main:app --reload
+
 Step 4: Access Swagger UI
 - http://localhost:8000/docs
 
