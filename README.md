@@ -24,26 +24,26 @@ All source code is maintained in a dedicated GitHub repository, and the service 
 
 
 # 3. Technology Stack
-FastAPI                : RESTful API framework
-Uvicorn                : ASGI server
-Microsoft SQL Server   : Database 
-Azure Data Studio      : Database management
-pyodbc                 : Database connectivity
-Pydantic               : Request/response validation
-dotenv                 : Secure environment variable management
+- FastAPI                : RESTful API framework
+- Uvicorn                : ASGI server
+- Microsoft SQL Server   : Database 
+- Azure Data Studio      : Database management
+- pyodbc                 : Database connectivity
+- Pydantic               : Request/response validation
+- dotenv                 : Secure environment variable management
 
 
 # 4. Project Structure
 /TrailService
-│── admin.py              # Admin CRUD endpoints
-│── build_database.py     # Demo data seeder
-│── db.py                 # Database connection handler
-│── login.py              # Simulated authentication + token generation
-│── main.py               # FastAPI app configuration
-│── models.py             # Pydantic models
-│── requirements.txt      # Dependencies
-│── swagger.yml           # API documentation
-└── user.py               # Public endpoints
+- │── admin.py              # Admin CRUD endpoints
+- │── build_database.py     # Demo data seeder
+- │── db.py                 # Database connection handler
+- │── login.py              # Simulated authentication + token generation
+- │── main.py               # FastAPI app configuration
+- │── models.py             # Pydantic models
+- │── requirements.txt      # Dependencies
+- │── swagger.yml           # API documentation
+- └── user.py               # Public endpoints
 
 
 # 5. Database Design
@@ -62,36 +62,38 @@ Additional database features:
 
 
 # 6. API Endpoints
-# Authentication
-POST /login – Simulated login returning a Bearer token
-# Admin Endpoints (token required)
-POST /trails – Create trail
-GET /trails – List trails
-GET /trails/{id} – Read trail
-PUT /trails/{id} – Update trail
-DELETE /trails/{id} – Delete trail
-POST /trails/{id}/locations – Add location
-GET /trails/{id}/locations – List locations
-DELETE /locations/{id} – Delete location
-POST /trails/{id}/reviews – Add review
-GET /trails/{id}/reviews – List reviews
-DELETE /reviews/{id} – Delete review
-# Public Endpoints
-GET /trails/public – View limited trail data from SQL view
+Authentication
+- POST /login – Simulated login returning a Bearer token
+- 
+Admin Endpoints (token required)
+- POST /trails – Create trail
+- GET /trails – List trails
+- GET /trails/{id} – Read trail
+- PUT /trails/{id} – Update trail
+- DELETE /trails/{id} – Delete trail
+- POST /trails/{id}/locations – Add location
+- GET /trails/{id}/locations – List locations
+- DELETE /locations/{id} – Delete location
+- POST /trails/{id}/reviews – Add review
+- GET /trails/{id}/reviews – List reviews
+ -DELETE /reviews/{id} – Delete review
+  
+Public Endpoints
+- GET /trails/public – View limited trail data from SQL view
 
 
 # 7. Deployment and Execution
 Step 1: Install dependencies
-    pip install -r requirements.txt
+    - pip install -r requirements.txt
 Step 2: Configure environment variables
-    DB_SERVER=localhost
-    DB_NAME=IMR
-    DB_USER=SA
-    DB_PASSWORD=C0mp2001!
+    - DB_SERVER=localhost
+    - DB_NAME=IMR
+    - DB_USER=SA
+    - DB_PASSWORD=C0mp2001!
 Step 3: Start the API
-    uvicorn main:app --reload
+    - uvicorn main:app --reload
 Step 4: Access Swagger UI
-    http://localhost:8000/docs
+    - http://localhost:8000/docs
 
 
 # 8. Testing
